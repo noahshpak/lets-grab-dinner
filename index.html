@@ -7,30 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="main.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-
-      <style>
-
-
-
-
-
-      </style>
-
-      <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearchLite.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/algoliasearch-helper@2.23.2/dist/algoliasearch.helper.min.js"></script>
-      <script type="text/javascript" src="/main.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearchLite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algoliasearch-helper@2.23.2/dist/algoliasearch.helper.min.js"></script>
+    <script type="text/javascript" src="/main.js"></script>
 
   </head>
   <body>
+    <div class="widget">
       <div class='search-wrapper'>
         <input autocomplete="off" id="search-box" id="q" placeholder="Search for Restaurants by Name, Cuisine, Location..." type="text" spellcheck="false"/>
+      </div>
+      <div class='results-wrapper'>
+          <h1>Results</h1>
         <div class="hits-wrapper" id=container>
-            <h1>Results</h1>
             <div id="hits"></div>
-            <pre id="container"></pre>
-
+            <div id="container"></div>
         </div>
       </div>
+    </div>
   </body>
 </html>

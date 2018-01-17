@@ -4,10 +4,12 @@ body {
 }
 
 .search-wrapper {
-    margin: 5vw;
     margin-right: 40px;
     vertical-align: middle;
+}
 
+.widget {
+  width: 500px;
 }
 
 .search-wrapper input#search-box {
@@ -24,17 +26,53 @@ body {
     border-radius: 5px;
     outline: none;
     margin: 1em 1.5em 3em;
-    width: calc(100% - 2em);
+    width: calc(100% - 3em);
     box-sizing: border-box;
 }
 
 
 .search-wrapper {
-    width: 400px;
+    width: 450px;
+}
+
+.results-wrapper {
+  font: 12px 'Montserrat';
+  padding-left: 16px;
+}
+
+.hit-item {
+  width: inherit;
+  margin: 2px;
+  height: 60px;
+  text-align: left;
+}
+
+.reviews {
+  margin-left: 10px;
+  font-weight: lighter;
+}
+
+
+.description {
+  border-left: 10px;
+  margin-left: 55px;
+}
+
+.hit-title {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.hit-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  float: left;
 }
 
 #container {
-  max-width: calc(100% - 4em);
+  max-width: calc(100% - 3em);
 }
 
 #container .hit {
