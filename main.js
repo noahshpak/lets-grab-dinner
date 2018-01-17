@@ -1,26 +1,36 @@
 $(document).ready(function() {
   // Initialize the client
   var client = algoliasearch("MOO6B8R0Z1", "a9b849cc21a51347b3082a5e30e70f4b");
-  var index = client.initIndex('open-table-restaurants');
+  const indexName = 'open-table-restaurants';
 
+  var helper = algoliasearchHelper(client, indexName);
 
-    // firstname
-  index.search('burger', function(err, content) {
-    console.log(content.hits);
+  // Listen to results coming from Algolia
+  helper.on('result', function(content) {
+    console.log(content);
+    renderHits(content);
   });
 
-  // firstname with typo
-  index.search('steak', function(err, content) {
-    console.log(content.hits);
+  function renderHits(content) {
+    $('#container').html(JSON.stringify(content, null, 2));
+  }
+
+  helper.search();
+
+  // The different parts of the UI that we want to use in this example
+  var $inputfield = $("#search-box");
+  var $hits = $('#hits');
+
+  // When there is a new character input:
+  // - update the query
+  // - trigger the search
+  $inputfield.keyup(function(e) {
+    helper.setQuery($inputfield.val()).search();
   });
 
-  // a company
-  index.search('fine dining', function(err, content) {
-    console.log(content.hits);
-  });
+  // Trigger a first search, so that we have a page with results
+  // from the start.
+  helper.search();
 
-  // a firstname & company
-  index.search('4.5', function(err, content) {
-    console.log(content.hits);
-  });
+  
 });

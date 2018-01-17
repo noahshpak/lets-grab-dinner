@@ -1,0 +1,47 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #ECECEC;
+}
+
+.search-wrapper {
+    margin: 5vw;
+    margin-right: 40px;
+    vertical-align: middle;
+
+}
+
+.search-wrapper input#search-box {
+    height: 42px;
+    background: #2b303b;
+    border: none;
+    font: 11px 'Montserrat';
+    float: left;
+    color: #eaeaea;
+    padding-left: 10px;
+    padding-right: 15px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    outline: none;
+    margin: 1em 1.5em 3em;
+    width: calc(100% - 2em);
+    box-sizing: border-box;
+}
+
+
+.search-wrapper {
+    width: 400px;
+}
+
+#container {
+  max-width: calc(100% - 4em);
+}
+
+#container .hit {
+  padding: 8px 0;
+}
+
+#container em {
+  background: yellow;
+  font-style: normal;
+}
