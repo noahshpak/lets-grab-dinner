@@ -1,17 +1,23 @@
 $(document).ready(function() {
+
     // Initialize the client
   var client = algoliasearch("MOO6B8R0Z1", "a9b849cc21a51347b3082a5e30e70f4b");
   const indexName = 'open-table-restaurants';
 
   var helper = algoliasearchHelper(client, indexName, {
-    facets: ['food_type', 'stars_count', 'payment_options']
+    facets: ['food_type']
   });
+
+  var $hitsContainer = $('#container');
+  var $searchBox = $("#search-box");
+  var $hits = $('#hits');
+  var $facetList = $("#facet-list");
 
 
   // Listen to results coming from Algolia
   helper.on('result', function(content) {
-    renderFacetList(content);
-    renderHits(content);
+    renderFacetList($facetList, content);
+    renderHits($hitsContainer, content);
   });
 
   // request geo data -> filter results by current location
@@ -25,31 +31,36 @@ $(document).ready(function() {
       helper.search();
   });
 
-  function renderHits(content) {
-    $('#container').html(function() {
-      return $.map(content.hits, function(hit) {
-        console.log(hit);
-        let imgHTML = '<img src=' + hit.image_url + '></img>';
-        let hitTitle = "<div class='hit-title'>" + hit.name + "</div>";
-        let hitReviews = "<span class='reviews'>Reviews (" + hit.reviews_count + ')</span>';
-        let hitRating = "<div class='hit-rating'>Rating: " + hit.stars_count + hitReviews + '</div>';
+  function constructHtml(hit) {
+    let imgHTML = $('<img></img>').attr('src', hit.image_url)
+                                  .attr('class', 'responsive-img circle z-depth-1');
+    let hitTitle = $('<span></span>').html(hit.name).attr('class', 'title');
 
-        const spacer = '&nbsp' + ' | ' + '&nbsp';
-        let details = hit.food_type + spacer + hit.neighborhood + spacer + hit.price_range;
-        let restaurantDetails = "<div class='details'>" + details + "</div>";
-        let hitDescription = "<div class='description'>" + hitTitle + hitRating + restaurantDetails + "</div>";
-        return '<div class="hit-item">' + imgHTML + hitDescription + '</div>';
+    const spacer = '&nbsp' + ' | ' + '&nbsp';
+    let details = $('<p></p>')
+                        .html(hit.food_type + spacer + hit.neighborhood + spacer + hit.price_range)
+                        .attr('class', '');
+
+    let hitReviews = $('<p></p>').html('Stars: ' + hit.stars_count + '   Reviews: ' + hit.reviews_count);
+    let collectionItem = $('<li></li>').attr('class', 'collection-item avatar');
+    collectionItem.append(imgHTML).append(hitTitle).append(hitReviews).append(details);
+
+    return collectionItem
+  }
+
+  function renderHits(container, content) {
+    container.html(function() {
+      return $.map(content.hits, function(hit) {
+        return constructHtml(hit)
       });
     });
   }
 
-  var $searchBox = $("#search-box");
-  var $hits = $('#hits');
-  var $facetList = $("#facet-list");
+
 
   $facetList.on('click', 'input[type=checkbox]', function(e) {
     var facetValue = $(this).data('facet');
-    helper.toggleRefinement('type', facetValue).search();
+    helper.toggleRefinement('food_type', facetValue).search();
   });
 
   function processFacet(facet) {
@@ -63,10 +74,36 @@ $(document).ready(function() {
     return $('<li>').append(checkbox).append(label);
   }
 
-  function renderFacetList(content) {
-    $facetList.html(function() {
-      return $.map(content.getFacetValues('type'), processFacet);
-    });
+  function breakIntoEvenChunks(step, divs) {
+    let cols = [];
+    for (var i = 0; i < divs.length - step; i += step) {
+      let col = $('<div></div>').attr('class', 'col s2');
+      let divsForThisCol = divs.slice(i, i + step);
+      for (var j = 0; j < divsForThisCol.length; j++) {
+        col.append(divsForThisCol[j]);
+      }
+      cols.push(col)
+    }
+    return cols;
+  }
+
+  function renderFacetList(facetList, content) {
+      facetList.html(function() {
+        let checkboxes = $.map(content.getFacetValues('food_type'), function(facet) {
+
+          var checkbox = $('<input type=checkbox>')
+            .data('facet', facet.name)
+            .attr('id', 'fl-' + facet.name);
+          if(facet.isRefined) checkbox.attr('checked', 'checked');
+          var label = $('<label>').html(facet.name + ' (' + facet.count + ')')
+                                  .attr('for', 'fl-' + facet.name);
+          return $('<div>').append(checkbox).append(label);
+        });
+
+        // return breakIntoEvenChunks(10, checkboxes);
+
+        return checkboxes
+      });
   }
 
 
@@ -77,7 +114,7 @@ $(document).ready(function() {
 
   // Trigger a first search, so that we have a page with results
   // from the start.
-  helper.setQueryParameter('hitsPerPage', 7).search();
+  helper.setQueryParameter('hitsPerPage').search();
 
 
 });
