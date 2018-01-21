@@ -1,3 +1,53 @@
 nav .input-field label {
   left: 12px !important;
 }
+
+
+.collection .collection-item.avatar {
+    min-height: 150px;
+    padding-left: 155px;
+    position: relative;
+}
+
+.collection .collection-item.avatar:not(.circle-clipper)>.circle, .collection .collection-item.avatar :not(.circle-clipper)>.circle {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    left: 0px;
+    display: inline-block;
+    vertical-align: middle;
+
+}
+
+.progress {
+  display: none;
+}
+
+.top.switch {
+  margin-top: 5px;
+}
+
+.star {
+  width: 15px;
+  vertical-align: text-top;
+}
+
+.collection {
+  border: 0px;
+}
+
+.collection .collection-item {
+  border: 0px;
+  line-height: 2rem;
+}
+
+.circle {
+  border-radius: 6px !important;
+}
+
+.title {
+  font-size: 18px !important;
+  line-height: 1.5em;
+  font-weight: bold;
+}

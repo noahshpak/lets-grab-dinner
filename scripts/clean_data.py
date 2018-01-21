@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas import Series
 from os.path import join
 
 FILEPATH_CSV = join('..', join('resources', join('dataset', 'restaurants_info.csv')))
@@ -13,7 +14,7 @@ def read_file_lines(filepath=FILEPATH_CSV):
     return lines
 
 def write_correct_csv(corrected_lines, output_file='corrected_csv.csv'):
-    with open(output_file, 'a') as csv_file:
+    with open(output_file, 'w') as csv_file:
         for line in corrected_lines:
             csv_file.write(line + '\n')
     return output_file
@@ -29,6 +30,11 @@ if __name__ == '__main__':
     # merge data frames on objectID and write to json file
     # this json file will be uploaded and indexed by Algolia
     merged = pd.merge(list_df, json_df, on="objectID")
-    with open('merged_restaurant_data.json', 'a') as f:
+
+    # normalize star counts
+    normalized = map(int, merged['stars_count'])
+    merged['normalized_star_count'] = Series(normalized, index=merged.index)
+
+    with open('merged_restaurant_data.json', 'w') as f:
          json_data = merged.to_json(orient='records')
          f.write(json_data)
