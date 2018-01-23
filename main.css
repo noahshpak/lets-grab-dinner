@@ -28,9 +28,16 @@ nav .input-field label {
   margin-top: 5px;
 }
 
+.lightsalmon {
+  color: lightsalmon;
+}
+
+.grey {
+  color: #ECECEC;
+}
 .star {
-  width: 15px;
-  vertical-align: text-top;
+  width: 25px;
+  vertical-align: text-bottom;
 }
 
 .collection {

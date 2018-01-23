@@ -23,12 +23,13 @@ $(document).ready(function() {
   var $progressBar = $('#progress-bar').hide();
   var $cuisineSearch = $('#cuisine-search');
   var $searchableFacetList = $('#searchable-facet-list');
+  var $paginationButton = $('#pagination-btn');
+  var $previousPageButton = $('#pagination-btn-back').addClass('disabled');
   var helper = algoliasearchHelper(client, indexName, { facets: facetLabels });
 
   // Trigger a first search, so that we have a page with results
   // from the start.
-  helper.search();
-
+  helper.setQueryParameter('hitsPerPage', 5).search();
 
   /* EVENTS */
 
@@ -36,8 +37,10 @@ $(document).ready(function() {
   helper.on('result', function(content) {
     renderFacetList($facetList, content);
     renderSearchableFacetList($searchableFacetList, '', 'Cuisines', 'food_type')
+
     renderFetchedOutputDescriptor($fetchedOutputDescriptor, content);
     renderHits($hitsContainer, content);
+    showOrHidePagination($paginationButton, $previousPageButton, content);
 
   });
 
@@ -54,9 +57,24 @@ $(document).ready(function() {
     var facetValue = $(this).data('facet');
     let facetLabel = $(this).data('label');
     helper.toggleRefinement(facetLabel, facetValue).search();
-    // TODO toggle refinement of the list
 
   });
+
+  $paginationButton.on('click', function(e) {
+      helper.nextPage().search();
+      $previousPageButton.removeClass('disabled');
+  });
+
+
+  $previousPageButton.on('click', function(e) {
+      helper.previousPage().search();
+      if (helper.getPage() == 0) {
+        $previousPageButton.addClass('disabled');
+      }
+
+  });
+
+
 
   // Fetch new results when char added to query
   $searchBox.on('keyup', function() {
@@ -65,8 +83,6 @@ $(document).ready(function() {
 
   $cuisineSearch.on('keyup', function() {
     renderSearchableFacetList($searchableFacetList, $(this).val(), 'Cuisines', 'food_type')
-
-
   });
 
 
@@ -182,15 +198,22 @@ $(document).ready(function() {
         return;
       }
 
-      let facetValues = content.facetHits;
+      var facetValues = content.facetHits;
       for (let f of facetValues) {
         f.label = label;
         f.name = f.value;
       }
+      // this should be abstracted away from food_type
+      if (helper.hasRefinements(label)) {
+        let refinements = helper.getRefinements(label);
+        facetValues = facetValues.filter(val => val.name == refinements[0].value);
+        facetValues[0].isRefined = true;
+      }
+
       let checkboxes = $.map(facetValues, renderFacet);
       let header = $('<h5></h5>').html(title);
       if (checkboxes.length > 0) {
-        $searchableFacetList.html(checkboxes);
+          $searchableFacetList.html(checkboxes);
       } else {
         let noResults = $('<p></p>').html('Sorry, no cuisines were found given those criteria.');
         $searchableFacetList.html(noResults)
@@ -244,6 +267,7 @@ $(document).ready(function() {
         let clearButton = $('<a></a>').attr('class', 'btn red lighten-2').html('Clear').on('click', function() {
           helper.setQueryParameter('aroundLatLng', "");
           helper.setQueryParameter('aroundRadius', "");
+          helper.clearRefinements('food_type');
           toggledFacets = {};
           $searchBox.val('');
           helper.setQuery('').search();
