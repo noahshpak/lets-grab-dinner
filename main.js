@@ -40,7 +40,7 @@ $(document).ready(function() {
 
     renderFetchedOutputDescriptor($fetchedOutputDescriptor, content);
     renderHits($hitsContainer, content);
-    showOrHidePagination($paginationButton, $previousPageButton, content);
+    showOrHidePagination($paginationButton, $previousPageButton, helper, content);
 
   });
 
@@ -63,6 +63,8 @@ $(document).ready(function() {
   $paginationButton.on('click', function(e) {
       helper.nextPage().search();
       $previousPageButton.removeClass('disabled');
+
+
   });
 
 
@@ -187,6 +189,20 @@ $(document).ready(function() {
     }
   }
 
+  /* END HELPERS */
+
+  function showOrHidePagination(nextButton, prevButton, helper, content) {
+    console.log(content.nbPages);
+    if (content.nbPages < 2) {
+      prevButton.hide();
+    } else if (helper.getPage() == content.nbPages) {
+      nextButton.hide();
+    } else {
+      nextButton.show();
+      prevButton.show();
+    }
+
+  }
 
   function renderSearchableFacetList(searchbox, query, title, label) {
     index.searchForFacetValues({
@@ -204,11 +220,13 @@ $(document).ready(function() {
         f.name = f.value;
       }
       // this should be abstracted away from food_type
+
       if (helper.hasRefinements(label)) {
         let refinements = helper.getRefinements(label);
         facetValues = facetValues.filter(val => val.name == refinements[0].value);
         facetValues[0].isRefined = true;
       }
+
 
       let checkboxes = $.map(facetValues, renderFacet);
       let header = $('<h5></h5>').html(title);
@@ -223,7 +241,7 @@ $(document).ready(function() {
 
     })
   }
-  /* END HELPERS */
+
 
   /* VIEWS */
   // Creates the UI for each hit (returned by the Algolia Helper)
